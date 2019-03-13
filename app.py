@@ -23,6 +23,7 @@ def crop_img(x,y,w,h,path):
 
 @app.route('/upload', methods=['POST','GET'])
 def upload_file():
+    data2={}
     file = request.files['image']
     name = str(int(time.time())) + str('.jpg')
     f = os.path.join(app.config['UPLOAD_FOLDER'],name)
@@ -37,8 +38,8 @@ def upload_file():
     imsave(f, croppedimg)
     with open(f, "rb") as imageFile:
         base64img = base64.b64encode(imageFile.read())
-    os.remove(f)
-    return jsonify({"data":str(data),"base64img":str(base64img)})
+        data2["data"]= base64img.decode('ascii')
+    return jsonify({"facedata":str(data),"base64img":data2})
 
 
 if __name__ == "__main__":
