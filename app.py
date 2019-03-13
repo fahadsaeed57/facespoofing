@@ -14,8 +14,8 @@ def upload_file():
     name = str(int(time.time()))
     f = os.path.join(app.config['UPLOAD_FOLDER'],name)
     file.save(f)
-    data = request.form['data']
-    return jsonify({"message":"uploaded img is " +str(name),"data":data})
+    # data = request.form['data']
+    return jsonify({"message":"uploaded img is " +str(name)})
 
 
 if __name__ == "__main__":
