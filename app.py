@@ -4,7 +4,7 @@ from scipy.misc import imread, imresize,imsave
 import numpy as np
 import time
 import json
-app = Flask(__name__)
+app = Flask(__name__,static_url_path='/uploads')
 
 UPLOAD_FOLDER = os.path.basename('uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
