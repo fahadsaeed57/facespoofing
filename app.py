@@ -4,6 +4,7 @@ from scipy.misc import imread, imresize,imsave
 import numpy as np
 import time
 import json
+import base64
 app = Flask(__name__,static_url_path='')
 
 UPLOAD_FOLDER = os.path.basename('uploads')
@@ -34,7 +35,10 @@ def upload_file():
     h = int(data["height"])
     croppedimg = crop_img(x,y,w,h,f)
     imsave(f, croppedimg)
-    return jsonify({"message":"uploaded img is " +str(name),"data":str(data)})
+    with open(f, "rb") as imageFile:
+        base64img = base64.b64encode(imageFile.read())
+    os.remove(f)
+    return jsonify({"data":str(data),"base64img":str(base64img)})
 
 
 if __name__ == "__main__":
