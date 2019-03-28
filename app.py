@@ -51,13 +51,13 @@ def crop_img(x,y,w,h,path):
 
 @app.route('/upload', methods=['POST','GET'])
 def upload_file():
+    load_mod()
     with graph.as_default():
         isSpoofed = False
         file = request.files['image']
         name = str(int(time.time())) + str('.jpg')
         f = os.path.join(app.config['UPLOAD_FOLDER'],name)
         file.save(f)
-        load_mod()
         result = predict_image(f)
         result = modelface.predict(list(result))
         if np.round(result)==1:
