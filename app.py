@@ -56,8 +56,8 @@ def upload_file():
     name = str(int(time.time())) + str('.jpg')
     f = os.path.join(app.config['UPLOAD_FOLDER'],name)
     file.save(f)
-    load_mod()
     with graph.as_default():
+        load_mod()
         result = predict_image(f)
         result = modelface.predict(list(result))
         if np.round(result)==1:
