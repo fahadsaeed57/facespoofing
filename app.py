@@ -12,7 +12,7 @@ import numpy as np
 import time
 import json
 import base64
-app = Flask(__name__,static_url_path='')
+app = Flask(__name__)
 
 UPLOAD_FOLDER = os.path.basename('uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -51,12 +51,12 @@ def crop_img(x,y,w,h,path):
 
 @app.route('/upload', methods=['POST','GET'])
 def upload_file():
-    isSpoofed = False
-    file = request.files['image']
-    name = str(int(time.time())) + str('.jpg')
-    f = os.path.join(app.config['UPLOAD_FOLDER'],name)
-    file.save(f)
     with graph.as_default():
+        isSpoofed = False
+        file = request.files['image']
+        name = str(int(time.time())) + str('.jpg')
+        f = os.path.join(app.config['UPLOAD_FOLDER'],name)
+        file.save(f)
         load_mod()
         result = predict_image(f)
         result = modelface.predict(list(result))
