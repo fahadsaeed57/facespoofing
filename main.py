@@ -22,15 +22,15 @@ modelvgg = None
 def create_model():
     filename = 'modelface.sav'
     loaded_model = joblib.load(filename)
-    graph = tf.get_default_graph()
-    return loaded_model,graph
-def load_mod():
-    global modelface,graph
-    modelface,graph= create_model()
-def predict_image(path,target_size=224): 
     modelvgg = VGG16()
     modelvgg.layers.pop()
     modelvgg = Model(inputs=modelvgg.inputs, outputs=modelvgg.layers[-1].output)
+    graph = tf.get_default_graph()
+    return loaded_model,modelvgg,graph
+def load_mod():
+    global modelvgg,modelface,graph
+    modelface,modelvgg,graph= create_model()
+def predict_image(path,target_size=224): 
     image = load_img(path, target_size=(target_size, target_size))
     image = img_to_array(image)
     image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
