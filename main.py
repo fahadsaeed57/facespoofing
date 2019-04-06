@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request,jsonify
-from scipy.misc import imread, imresize,imsave
+from imageio import imread,imwrite
 from keras.applications.vgg16 import VGG16
 from keras.preprocessing.image import load_img
 from keras.preprocessing.image import img_to_array
@@ -23,10 +23,11 @@ def create_model():
     filename = 'modelface.sav'
     loaded_model = joblib.load(filename)
     graph = tf.get_default_graph()
-    return loaded_model,graph
+    modelvgg = VGG16()
+    return loaded_model,graph,modelvgg
 def load_mod():
-    global modelface,graph
-    modelface,graph= create_model()
+    global modelface,graph,modelvgg
+    modelface,graph,modelvgg= create_model()
 def predict_image(path,target_size=224): 
     modelvgg = VGG16()
     modelvgg.layers.pop()
@@ -38,7 +39,7 @@ def predict_image(path,target_size=224):
     img_feature = modelvgg.predict(image, verbose=0)
     return img_feature
 def crop_img(x,y,w,h,path):
-    img = imread(str(path), mode='RGB')
+    img = imread(str(path))
     r = max(w, h) / 2
     centerx = x + w / 2
     centery = y + h / 2
@@ -46,7 +47,7 @@ def crop_img(x,y,w,h,path):
     ny = int(centery - r)
     nr = int(r * 2)
     faceimg = img[ny:ny+nr, nx:nx+nr]
-    faceimg = imresize(faceimg,(120,120))
+    # faceimg = imresize(faceimg,(120,120))
     return faceimg
 
 @app.route('/upload', methods=['POST','GET'])
@@ -58,10 +59,12 @@ def upload_file():
         name = str(int(time.time())) + str('.jpg')
         f = os.path.join(app.config['UPLOAD_FOLDER'],name)
         file.save(f)
+        # load_mod()
         result = predict_image(f)
         result = modelface.predict(list(result))
         if np.round(result)==1:
             isSpoofed = True
+            os.remove(f)
         if isSpoofed == True:
             return jsonify({"isSpoofed":str(isSpoofed)})
         if isSpoofed == False:
@@ -73,14 +76,15 @@ def upload_file():
             w = int(data["width"])
             h = int(data["height"])
             croppedimg = crop_img(x,y,w,h,f)
-            imsave(f, croppedimg)
+            imwrite(f, croppedimg)
             with open(f, "rb") as imageFile:
                 base64img = base64.b64encode(imageFile.read())
                 data2["data"]= base64img.decode('ascii')
+            os.remove(f)
             return jsonify({"facedata":str(data),"base64img":data2,"isSpoofed":str(isSpoofed)})
 
 
 if __name__ == "__main__":
-    print(("* Starting server ..."))
     load_mod()
+    print(("* Starting server ..."))
     app.run(debug=True)
