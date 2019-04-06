@@ -23,11 +23,10 @@ def create_model():
     filename = 'modelface.sav'
     loaded_model = joblib.load(filename)
     graph = tf.get_default_graph()
-    modelvgg = VGG16()
-    return loaded_model,graph,modelvgg
+    return loaded_model,graph
 def load_mod():
-    global modelface,graph,modelvgg
-    modelface,graph,modelvgg= create_model()
+    global modelface,graph
+    modelface,graph= create_model()
 def predict_image(path,target_size=224): 
     modelvgg = VGG16()
     modelvgg.layers.pop()
@@ -52,7 +51,7 @@ def crop_img(x,y,w,h,path):
 
 @app.route('/upload', methods=['POST','GET'])
 def upload_file():
-    load_mod()
+    # load_mod()
     with graph.as_default():
         isSpoofed = False
         file = request.files['image']
