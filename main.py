@@ -59,7 +59,6 @@ def upload_file():
         name = str(int(time.time())) + str('.jpg')
         f = os.path.join(app.config['UPLOAD_FOLDER'],name)
         file.save(f)
-        # load_mod()
         result = predict_image(f)
         result = modelface.predict(list(result))
         if np.round(result)==1:
@@ -85,6 +84,6 @@ def upload_file():
 
 
 if __name__ == "__main__":
-    load_mod()
     print(("* Starting server ..."))
-    app.run(debug=True)
+    load_mod()
+    app.run(debug=True,host='0.0.0.0',port=80)
