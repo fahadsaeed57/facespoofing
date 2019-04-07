@@ -7,12 +7,13 @@ from keras.preprocessing.image import img_to_array
 from keras.applications.vgg16 import preprocess_input
 from keras.models import Model
 from sklearn.externals import joblib
+import cv2
 import tensorflow as tf
 import numpy as np
 import time
 import json
 import base64
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/')
 
 UPLOAD_FOLDER = os.path.basename('uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -46,7 +47,7 @@ def crop_img(x,y,w,h,path):
     ny = int(centery - r)
     nr = int(r * 2)
     faceimg = img[ny:ny+nr, nx:nx+nr]
-    # faceimg = imresize(faceimg,(120,120))
+    faceimg =cv2.resize(faceimg,(40,40))
     return faceimg
 
 @app.route('/upload', methods=['POST','GET'])
