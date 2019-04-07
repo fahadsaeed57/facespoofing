@@ -13,9 +13,9 @@ import numpy as np
 import time
 import json
 import base64
-app = Flask(__name__, static_url_path='/')
+app = Flask(__name__)
 
-UPLOAD_FOLDER = os.path.basename('uploads')
+UPLOAD_FOLDER = os.path.basename('static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 modelface = None
 graph = None
@@ -76,10 +76,12 @@ def upload_file():
             h = int(data["height"])
             croppedimg = crop_img(x,y,w,h,f)
             imwrite(f, croppedimg)
-            with open(f, "rb") as imageFile:
-                base64img = base64.b64encode(imageFile.read())
-                data2["data"]= base64img.decode('ascii')
-            os.remove(f)
+
+            # with open(f, "rb") as imageFile:
+            #     base64img = base64.b64encode(imageFile.read())
+            #     data2["data"]= base64img.decode('ascii')
+            # os.remove(f)
+            data2["data"]= "/static/"+name
             return jsonify({"facedata":str(data),"base64img":data2,"isSpoofed":str(isSpoofed)})
 
 
