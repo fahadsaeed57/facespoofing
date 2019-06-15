@@ -10,5 +10,7 @@ COPY . /api
 
 RUN pip install -r requirements.txt
 
-CMD ["bash","docker_start_script.sh"]
+EXPOSE 5000
+
+CMD ["python","main.py"]
 
