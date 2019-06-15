@@ -2,7 +2,7 @@ FROM python:3.6
 
 LABEL maintainer="Syed Fahad Saeed"
 
-RUN apt-get update
+RUN apt-get update && apt-get install python-opencv && apt-get update
 
 WORKDIR /api
 
