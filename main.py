@@ -69,7 +69,7 @@ def create_face_recog_model():
     model.add(Convolution2D(2622, (1, 1)))
     model.add(Flatten())
     model.add(Activation('softmax'))
-    model.model.load_weights('vgg_face_weights.h5')
+    model.model.load_weights('facerecogweights.h5')
     model =Model(inputs=model.layers[0].input, outputs=model.layers[-2].output)
     return model
 
