@@ -172,7 +172,7 @@ def upload_file():
             #     base64img = base64.b64encode(imageFile.read())
             #     data2["data"]= base64img.decode('ascii')
             # os.remove(f)
-            data2["data"]= "/static/"+name
+            data2["data"]= "static/"+name
             return jsonify({"facedata":str(data),"base64img":data2,"isSpoofed":str(isSpoofed)})
 
 
